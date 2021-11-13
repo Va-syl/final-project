@@ -106,7 +106,7 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
   render() {
     return (
       <div>
-        <Header as="h1">Courses</Header>
+        <Header as="h1">Trainacity Courses Enrollment</Header>
 
         {this.renderCreateCourseInput()}
 
@@ -160,17 +160,39 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
 
   renderCoursesList() {
     return (
+        
       <Grid padded>
+        <Header as="h2">Transcript</Header>
+        <Grid.Row>
+            <Grid.Column width={2} verticalAlign="middle">
+                Completed
+            </Grid.Column>
+            <Grid.Column width={6} verticalAlign="middle">
+                Name
+              </Grid.Column>
+              <Grid.Column width={3} floated="right">
+                Number
+              </Grid.Column>
+              <Grid.Column width={1} floated="right">
+                Upload Screenshot
+              </Grid.Column>
+              <Grid.Column width={1} floated="right">
+                  Deenroll
+              </Grid.Column>
+              <Grid.Column>
+                  Project
+              </Grid.Column>
+        </Grid.Row>
         {this.state.courses.map((course, pos) => {
           return (
             <Grid.Row key={course.courseId}>
-              <Grid.Column width={1} verticalAlign="middle">
+              <Grid.Column width={2} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onCourseCheck(pos)}
                   checked={course.completed}
                 />
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={6} verticalAlign="middle">
                 {course.courseName}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
@@ -194,9 +216,11 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
+              <Grid.Column>
               {course.projectUrl && (
-                <Image src={course.projectUrl} size="small" wrapped />
+                <a href={course.projectUrl}> Screenshot</a>
               )}
+              </Grid.Column>   
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>

@@ -21,7 +21,7 @@ export async function enrollCourse(
   idToken: string,
   newCourse: EnrollCourseRequest
 ): Promise<Course> {
-  const response = await Axios.post(`${apiEndpoint}/Courses`,  JSON.stringify(newCourse), {
+  const response = await Axios.post(`${apiEndpoint}/courses`,  JSON.stringify(newCourse), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`

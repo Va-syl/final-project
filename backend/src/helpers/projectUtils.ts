@@ -11,7 +11,7 @@ export async function generateUploadUrl(courseId: string): Promise<string> {
     const s3 = new XAWS.S3({
         signatureVersion: 'v4'
     })
-    logger.info("getting presignedUrl")
+    logger.info("getting presignedUrl for ID" + courseId)
     const presignedUrl  = s3.getSignedUrl('putObject', {
       Bucket: process.env.PROJECTS_S3_BUCKET,
       Key: courseId,

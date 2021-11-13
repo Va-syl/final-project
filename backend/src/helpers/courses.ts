@@ -53,6 +53,6 @@ export function updateCourse(
 export function createProjectPresignedUrl(
     courseId: string
 ): Promise<string> {
-    logger.info("createProjectPresignedUrl", courseId)
+    logger.info("createProjectPresignedUrl " + courseId)
     return generateUploadUrl(courseId)
 } 

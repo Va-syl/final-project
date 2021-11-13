@@ -12,7 +12,7 @@ export const handler = middy(
     const courseId = event.pathParameters.courseId
     logger.info('generateProjectUrl request', event)
     const uploadUrl = await createProjectPresignedUrl(courseId)
-    logger.info('generateProjectUrl uploadUrl', uploadUrl)
+    logger.info('generateProjectUrl uploadUrl ' + uploadUrl)
 
     return {
       statusCode: 200,

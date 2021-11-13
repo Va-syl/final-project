@@ -73,15 +73,15 @@ export class UpdateCourse extends React.PureComponent<
   render() {
     return (
       <div>
-        <h1>Upload Project Zip file</h1>
+        <h1>Upload Project Screenshot</h1>
 
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
-            <label>Zip File</label>
+            <label>Project Screenshot</label>
             <input
               type="file"
-              accept="zip/*"
-              placeholder="Zip file to upload"
+              accept="image/*"
+              placeholder="Completed Project Screenshot to upload"
               onChange={this.handleFileChange}
             />
           </Form.Field>
@@ -96,7 +96,7 @@ export class UpdateCourse extends React.PureComponent<
 
     return (
       <div>
-        {this.state.uploadState === UploadState.FetchingPresignedUrl && <p>Uploading zip metadata</p>}
+        {this.state.uploadState === UploadState.FetchingPresignedUrl && <p>Uploading image metadata</p>}
         {this.state.uploadState === UploadState.UploadingFile && <p>Uploading file</p>}
         <Button
           loading={this.state.uploadState !== UploadState.NoUpload}
