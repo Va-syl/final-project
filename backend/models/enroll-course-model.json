@@ -3,18 +3,19 @@
   "title": "group",
   "type": "object",
   "properties": {
-    "name": {
+    "courseName": {
       "type": "string",
       "minLength": 1
       
     },
-    "dueDate": {
-      "type": "string"
+    "courseNumber": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
-    "name",
-    "dueDate"
+    "courseName",
+    "courseNumber"
   ],
   "additionalProperties": false
 }

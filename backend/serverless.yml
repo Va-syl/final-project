@@ -21,13 +21,10 @@ provider:
     lambda: true
     apiGateway: true
 
-  # Use these variables in the functions and resouorces section below. For example, 
-  # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
-    TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: udagram-11720211041-serverless-c4-todo-images-${self:provider.stage}
-    SIGNED_URL_EXPIRATION: 300
+    COURSES_TABLE: Courses-${self:provider.stage}
+    COURSES_CREATED_AT_INDEX: CreatedAtIndex
+    PROJECTS_S3_BUCKET: trainacity-11720211041-projects-${self:provider.stage}
 
   logs:
     # Enable API Gateway logs
@@ -48,81 +45,81 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  GetTodos:
-    handler: src/lambda/http/getTodos.handler
+  GetCourses:
+    handler: src/lambda/http/getCourses.handler
     events:
       - http:
           method: get
-          path: todos
+          path: courses
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COURSES_TABLE}/index/${self:provider.environment.COURSES_CREATED_AT_INDEX}
 
-  CreateTodo:
-    handler: src/lambda/http/createTodo.handler
+  EnrollCourse:
+    handler: src/lambda/http/enrollCourse.handler
     events:
       - http:
           method: post
-          path: todos
+          path: courses
           cors: true
           authorizer: Auth
           request:
             schema:
-              application/json: ${file(models/create-todo-model.json)}
+              application/json: ${file(models/enroll-course-model.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COURSES_TABLE}
 
-  UpdateTodo:
-    handler: src/lambda/http/updateTodo.handler
+  UpdateCourse:
+    handler: src/lambda/http/updateCourse.handler
     events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: courses/{courseId}
           cors: true
           authorizer: Auth
           request:
             schema:
-              application/json: ${file(models/update-todo-model.json)}
+              application/json: ${file(models/update-course-model.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COURSES_TABLE}
 
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  DeenrollCourse:
+    handler: src/lambda/http/deenrollCourse.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: courses/{courseId}
           cors: true
           authorizor: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COURSES_TABLE}
 
-  GenerateUploadUrl:
-    handler: src/lambda/http/generateUploadUrl.handler
+  GenerateProjectUrl:
+    handler: src/lambda/http/generateProjectUrl.handler
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: courses/{courseId}/project
           cors: true
           authorizor: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
           - s3:*
-        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
+        Resource: arn:aws:s3:::${self:provider.environment.PROJECTS_S3_BUCKET}/*
     
 
 resources:
@@ -138,11 +135,11 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
     
-    TodosTable:
+    CoursesTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: todoId
+          - AttributeName: courseId
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
@@ -151,10 +148,10 @@ resources:
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: courseId
             KeyType: RANGE
         LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
+          - IndexName: ${self:provider.environment.COURSES_CREATED_AT_INDEX}
             KeySchema:
             - AttributeName: userId
               KeyType: HASH
@@ -163,12 +160,12 @@ resources:
             Projection:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
+        TableName: ${self:provider.environment.COURSES_TABLE}
 
-    AttachmentsBucket:
+    ProjectsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+        BucketName: ${self:provider.environment.PROJECTS_S3_BUCKET}
         CorsConfiguration:
           CorsRules:
             - AllowedOrigins:
@@ -196,5 +193,5 @@ resources:
               Action: 
                 - 's3:GetObject'
                 - 's3:PutObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*'
-        Bucket: !Ref AttachmentsBucket
+              Resource: 'arn:aws:s3:::${self:provider.environment.PROJECTS_S3_BUCKET}/*'
+        Bucket: !Ref ProjectsBucket

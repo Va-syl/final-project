@@ -2,19 +2,19 @@ import * as AWS from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import { createLogger } from '../utils/logger'
 
-const logger = createLogger('attachmentUtils')
+const logger = createLogger('projectUtils')
 const XAWS = AWSXRay.captureAWS(AWS)
 
-//fileStogare
-export async function generateUploadUrl(todoId: string): Promise<string> {
+//fileStorage
+export async function generateUploadUrl(courseId: string): Promise<string> {
     logger.info("generateUploadUrl")
     const s3 = new XAWS.S3({
         signatureVersion: 'v4'
     })
     logger.info("getting presignedUrl")
     const presignedUrl  = s3.getSignedUrl('putObject', {
-      Bucket: process.env.ATTACHMENT_S3_BUCKET,
-      Key: todoId,
+      Bucket: process.env.PROJECTS_S3_BUCKET,
+      Key: courseId,
       Expires: 5000
     })
     logger.info("retrieved presignedUrl", presignedUrl)

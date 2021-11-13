@@ -2,24 +2,21 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
-import { updateTodo } from '../../helpers/todos'
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
+import { deenrollCourse } from '../../helpers/courses'
 import { getUserId } from '../utils'
-import {createLogger} from '../../utils/logger'
+import { createLogger } from '../../utils/logger'
 
-
-const logger = createLogger('updateTodo')
+const logger = createLogger('deenrollCourse')
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const todoId = event.pathParameters.todoId
-    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
-    logger.info('updateTodo request', event)
+    const courseId = event.pathParameters.courseId
+    logger.info('deenrollCourse request', event)
     const userId = getUserId(event)
-    logger.info('updateTodo userId', userId)
+    logger.info('deenrollCourse userId', userId)
 
-    await updateTodo(updatedTodo, todoId, userId)
-    logger.info('Finished updateTodo')
+    await deenrollCourse(courseId, userId)
+    logger.info('Finished deenrollCourse')
 
     return {
       statusCode: 200,

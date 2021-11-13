@@ -3,16 +3,16 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
 import {createLogger} from '../../utils/logger'
-import { createAttachmentPresignedUrl } from '../../helpers/todos'
+import { createProjectPresignedUrl } from '../../helpers/courses'
 
-const logger = createLogger('generateUploadUrl')
+const logger = createLogger('generateProjectUrl')
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const todoId = event.pathParameters.todoId
-    logger.info('generateUploadUrl request', event)
-    const uploadUrl = await createAttachmentPresignedUrl(todoId)
-    logger.info('generateUploadUrl uploadUrl', uploadUrl)
+    const courseId = event.pathParameters.courseId
+    logger.info('generateProjectUrl request', event)
+    const uploadUrl = await createProjectPresignedUrl(courseId)
+    logger.info('generateProjectUrl uploadUrl', uploadUrl)
 
     return {
       statusCode: 200,

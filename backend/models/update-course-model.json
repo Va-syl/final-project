@@ -3,20 +3,24 @@
   "title": "group",
   "type": "object",
   "properties": {
-    "name": {
+    "courseName": {
       "type": "string"
     },
-    "dueDate": {
+    "courseNumber": {
       "type": "string"
     },
-    "done": {
+    "courseId": {
+      "type": "string"
+    },
+    "completed": {
       "type": "boolean"
     }
   },
   "required": [
-    "name",
-    "dueDate",
-    "done"
+    "courseName",
+    "courseNumber",
+    "courseId",
+    "completed"
   ],
   "additionalProperties": false
 }
