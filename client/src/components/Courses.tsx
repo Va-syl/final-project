@@ -1,4 +1,4 @@
-import dateFormat from 'dateformat'
+
 import { History } from 'history'
 import update from 'immutability-helper'
 import * as React from 'react'
@@ -14,7 +14,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { enrollCourse, deenrollCourse, getCourses, patchCourse } from '../api/courses-api'
+import { enrollCourse, deenrollCourse, getCourses, patchCourse, getCatalog } from '../api/courses-api'
 import Auth from '../auth/Auth'
 import { Course } from '../types/Course'
 
@@ -24,7 +24,8 @@ interface CoursesProps {
 }
 
 interface CoursesState {
-  courses: Course[]
+  courses: Course[],
+  catalog: Course[],
   newCourseName: string
   loadingCourses: boolean
 }
@@ -32,6 +33,7 @@ interface CoursesState {
 export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
   state: CoursesState = {
     courses: [],
+    catalog: [],
     newCourseName: '',
     loadingCourses: true
   }
@@ -46,7 +48,7 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
 
   onCourseEnroll = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-        alert("add course number input, and validate against a list")
+        alert("At this point, validate the entered course number and send the matching name to enroll")
       const courseNumber = "1234"
       const newCourse = await enrollCourse(this.props.auth.getIdToken(), {
         courseName: this.state.newCourseName,
@@ -93,6 +95,16 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
 
   async componentDidMount() {
     try {
+        const catalog = await getCatalog(this.props.auth.getIdToken())
+        this.setState({
+            catalog
+          })
+    }
+    catch(e: any){
+        alert(`Failed to fetch catalog: ${e.message}`)
+    }
+
+    try {
       const courses = await getCourses(this.props.auth.getIdToken())
       this.setState({
         courses,
@@ -105,14 +117,46 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
 
   render() {
     return (
-      <div>
-        <Header as="h3">Current Course Catalog</Header>
-
+      <div>   
+        {this.renderCatalog()}
+        
         {this.renderCreateCourseInput()}
 
         {this.renderCourses()}
       </div>
     )
+  }
+
+  renderCatalog() {
+    return (
+        
+        <Grid padded>
+          <Header as="h3">Current Course Catalog</Header>
+          <Grid.Row>
+              <Grid.Column width={2} verticalAlign="middle">
+                  Course Number
+              </Grid.Column>
+              <Grid.Column width={6} verticalAlign="middle">
+                  Course Name
+                </Grid.Column>
+          </Grid.Row>
+          {this.state.catalog.map((course, pos) => {
+            return (
+              <Grid.Row>
+                <Grid.Column width={2} verticalAlign="middle">
+                  {course.courseNumber}
+                </Grid.Column>
+                <Grid.Column width={6} verticalAlign="middle">
+                  {course.courseName}
+                </Grid.Column>
+                <Grid.Column width={16}>
+                  <Divider />
+                </Grid.Column>
+              </Grid.Row>
+            )
+          })}
+        </Grid>
+      )
   }
 
   renderCreateCourseInput() {
@@ -129,7 +173,7 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
             }}
             fluid
             actionPosition="left"
-            placeholder="Enter Course Name..."
+            placeholder="Enter Course Number..."
             onChange={this.handleNameChange}
           />
         </Grid.Column>

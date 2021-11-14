@@ -17,6 +17,19 @@ export async function getCourses(idToken: string): Promise<Course[]> {
   return response.data.items
 }
 
+export async function getCatalog(idToken: string): Promise<Course[]> {
+    console.log('Fetching catalog')
+  
+    const response = await Axios.get(`${apiEndpoint}/catalog`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`
+      },
+    })
+    console.log('catalog:', response.data)
+    return response.data.items
+  }
+
 export async function enrollCourse(
   idToken: string,
   newCourse: EnrollCourseRequest

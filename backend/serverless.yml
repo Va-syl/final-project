@@ -25,6 +25,8 @@ provider:
     COURSES_TABLE: Courses-${self:provider.stage}
     COURSES_CREATED_AT_INDEX: CreatedAtIndex
     PROJECTS_S3_BUCKET: trainacity-11720211041-projects-${self:provider.stage}
+    CATALOG_TABLE: Catalog1-${self:provider.stage}
+    CATALOG_INDEX: CatalogIndex
 
   logs:
     # Enable API Gateway logs
@@ -58,6 +60,21 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COURSES_TABLE}/index/${self:provider.environment.COURSES_CREATED_AT_INDEX}
+
+
+  GetCatalog:
+    handler: src/lambda/http/getCatalog.handler
+    events:
+      - http:
+          method: get
+          path: catalog
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATALOG_TABLE}/index/${self:provider.environment.CATALOG_INDEX}
 
   EnrollCourse:
     handler: src/lambda/http/enrollCourse.handler
@@ -138,6 +155,33 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
+
+    CatalogTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: courseId
+            AttributeType: S
+          - AttributeName: courseName
+            AttributeType: S
+          - AttributeName: available
+            AttributeType: S
+        KeySchema:
+          - AttributeName: available
+            KeyType: HASH
+          - AttributeName: courseId
+            KeyType: RANGE
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.CATALOG_INDEX}
+            KeySchema:
+            - AttributeName: available
+              KeyType: HASH
+            - AttributeName: courseName
+              KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CATALOG_TABLE}
     
     CoursesTable:
       Type: AWS::DynamoDB::Table

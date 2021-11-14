@@ -17,6 +17,11 @@ export async function getCoursesForUser(  userId: string): Promise<Course[]> {
     return courseAccess.getCoursesForUser(userId)
   }
 
+  export async function getCatalog(): Promise<Course[]> {
+    logger.info("getCatalog")
+    return courseAccess.getCatalog()
+  }
+
 export async function enrollCourse(
     enrollCourseRequest: EnrollCourseRequest,
   userId: string

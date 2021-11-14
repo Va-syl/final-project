@@ -15,7 +15,25 @@ export class CourseAccess {
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly coursesTable = process.env.COURSES_TABLE,
     private readonly index = process.env.COURSES_CREATED_AT_INDEX,
+    private readonly catalogTable = process.env.CATALOG_TABLE,
+    private readonly catalogIndex = process.env.CATALOG_INDEX
     ) {
+  }
+
+  async getCatalog(): Promise<Course[]>{
+    logger.info('getCatalog')
+    const result = await this.docClient.query({
+        TableName: this.catalogTable,
+        IndexName: this.catalogIndex,
+        KeyConditionExpression: 'available = :available',
+        ExpressionAttributeValues: {
+           ':available': true
+          }
+        }).promise()
+
+    logger.info('getCatalog result', result)
+    const items = result.Items
+    return items as Course[]
   }
 
   async getCoursesForUser(userId: string): Promise<Course[]> {
