@@ -3,4 +3,5 @@ export interface UpdateCourseRequest {
     courseNumber: string
     courseId: string
     completed: boolean
+    projectUploaded: boolean
   }

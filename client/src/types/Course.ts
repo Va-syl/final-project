@@ -6,4 +6,5 @@ export interface Course {
     userId: string
     completed: boolean
     projectUrl?: string
+    projectUploaded: boolean
   }

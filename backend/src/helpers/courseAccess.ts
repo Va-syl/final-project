@@ -76,6 +76,30 @@ export class CourseAccess {
     return result.Attributes as CourseUpdate;
   }
 
+  async updateCourseProjectUpload(userId: string, courseId: string): Promise<string> {
+    logger.info('Updating course project upload ' + courseId + " for user " + userId)
+
+    const updateParams = {
+        TableName: this.coursesTable,
+        Key: {
+          userId: userId,
+          courseId: courseId
+        },
+        ExpressionAttributeNames: {
+          '#projectUploaded': 'projectUploaded'
+        },
+        ExpressionAttributeValues: {
+          ':projectUploaded': true
+        },
+        UpdateExpression: 'set #projectUploaded = :projectUploaded',
+        ReturnValues: 'ALL_NEW',
+      };
+
+    const result = await this.docClient.update(updateParams).promise()
+    logger.info('Updated course project upload ' + courseId + " for user " + userId, result)
+    return "";
+  }
+
   async deenrollCourse(userId: string, courseId: string): Promise<string> {
     logger.info('Deenrolling from course ' + courseId + " for user " + userId)
 

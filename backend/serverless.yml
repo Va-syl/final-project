@@ -118,6 +118,10 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.COURSES_TABLE}
+      - Effect: Allow
+        Action:
           - s3:*
         Resource: arn:aws:s3:::${self:provider.environment.PROJECTS_S3_BUCKET}/*
     

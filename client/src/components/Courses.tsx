@@ -106,7 +106,7 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
   render() {
     return (
       <div>
-        <Header as="h1">Trainacity Courses Enrollment</Header>
+        <Header as="h3">Current Course Catalog</Header>
 
         {this.renderCreateCourseInput()}
 
@@ -170,7 +170,7 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
             <Grid.Column width={6} verticalAlign="middle">
                 Name
               </Grid.Column>
-              <Grid.Column width={3} floated="right">
+              <Grid.Column width={1} floated="right">
                 Number
               </Grid.Column>
               <Grid.Column width={1} floated="right">
@@ -179,8 +179,8 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
               <Grid.Column width={1} floated="right">
                   Deenroll
               </Grid.Column>
-              <Grid.Column>
-                  Project
+              <Grid.Column width={2} floated="right">
+                  Project Screenshot
               </Grid.Column>
         </Grid.Row>
         {this.state.courses.map((course, pos) => {
@@ -195,7 +195,7 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
               <Grid.Column width={6} verticalAlign="middle">
                 {course.courseName}
               </Grid.Column>
-              <Grid.Column width={3} floated="right">
+              <Grid.Column width={1} floated="right">
                 {course.courseNumber}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
@@ -216,9 +216,12 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              <Grid.Column>
-              {course.projectUrl && (
-                <a href={course.projectUrl}> Screenshot</a>
+              <Grid.Column width={2} floated="right">
+              {course.projectUploaded && (
+                <Image src={course.projectUrl} size="small" wrapped />
+              )}
+              {course.projectUploaded && (
+              <a href={course.projectUrl}> Screenshot</a>              
               )}
               </Grid.Column>   
               <Grid.Column width={16}>

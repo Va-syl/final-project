@@ -38,6 +38,7 @@ export default class App extends Component<AppProps, AppState> {
       <div>
         <Segment style={{ padding: '8em 0em' }} vertical>
           <Grid container stackable verticalAlign="middle">
+          <h1>Trainacity Courses Enrollment</h1>
             <Grid.Row>
               <Grid.Column width={16}>
                 <Router history={this.props.history}>
@@ -59,7 +60,7 @@ export default class App extends Component<AppProps, AppState> {
         <Menu.Item name="home">
           <Link to="/">Home</Link>
         </Menu.Item>
-
+        
         <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
       </Menu>
     )

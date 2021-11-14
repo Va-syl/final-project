@@ -32,7 +32,8 @@ export async function enrollCourse(
     courseNumber: enrollCourseRequest.courseNumber,
     createdAt: new Date().toISOString(),
     completed: false,
-    projectUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`
+    projectUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`,
+    projectUploaded: false
   })
 }
 
@@ -50,9 +51,12 @@ export function updateCourse(
     return courseAccess.updateCourse(updateCourseRequest, userId, courseId)
   }
 
-export function createProjectPresignedUrl(
-    courseId: string
+export async function createProjectPresignedUrl(
+    courseId: string,
+    userId: string
 ): Promise<string> {
     logger.info("createProjectPresignedUrl " + courseId)
-    return generateUploadUrl(courseId)
+    const result = generateUploadUrl(courseId)
+    await courseAccess.updateCourseProjectUpload(userId, courseId)
+    return result     
 } 
