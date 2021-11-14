@@ -1,5 +1,11 @@
 # Final Project: Serverless Trainacity
 
+# How to run application
+Repository contains a client application. Upon getting the code, from the client directory run the following commands:
+npm install 
+npm run start
+This should start a React development server at http://localhost:3000/ that will interact with the backend APIs.
+
 # Functionality of the Trainacity application
 
 Trainacity application will allow students to enroll in the currently available Trainacity Cloud-related training courses. Each student only has access to his/her courses.  Students cannot enroll in courses that are not offered.  Students can mark their courses as completed, and can upload project screenshots for review when completed.  Enroll creates items, deenroll deletes items, completing course updates items.  Project screenshots can be uploaded.  Authentication is enforced with Auth0.  
