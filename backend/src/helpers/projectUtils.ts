@@ -17,6 +17,6 @@ export async function generateUploadUrl(courseId: string): Promise<string> {
       Key: courseId,
       Expires: 5000
     })
-    logger.info("retrieved presignedUrl", presignedUrl)
+    logger.info("retrieved presignedUrl " + presignedUrl)
     return presignedUrl as string
   }

@@ -14,11 +14,13 @@ export const handler = middy(
     const uploadUrl = await createProjectPresignedUrl(courseId)
     logger.info('generateProjectUrl uploadUrl ' + uploadUrl)
 
+    logger.info("url response " + JSON.stringify({
+        uploadUrl
+      }));
+
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        uploadUrl
-      })
+      body: uploadUrl
     }
   }
 )
