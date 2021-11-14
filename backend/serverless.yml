@@ -26,7 +26,6 @@ provider:
     COURSES_CREATED_AT_INDEX: CreatedAtIndex
     PROJECTS_S3_BUCKET: trainacity-11720211041-projects-${self:provider.stage}
     CATALOG_TABLE: Catalog1-${self:provider.stage}
-    CATALOG_INDEX: CatalogIndex
 
   logs:
     # Enable API Gateway logs
@@ -74,7 +73,7 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATALOG_TABLE}/index/${self:provider.environment.CATALOG_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATALOG_TABLE}
 
   EnrollCourse:
     handler: src/lambda/http/enrollCourse.handler
@@ -160,26 +159,15 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: courseId
-            AttributeType: S
-          - AttributeName: courseName
-            AttributeType: S
           - AttributeName: available
+            AttributeType: S
+          - AttributeName: courseNumber
             AttributeType: S
         KeySchema:
           - AttributeName: available
             KeyType: HASH
-          - AttributeName: courseId
+          - AttributeName: courseNumber
             KeyType: RANGE
-        LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.CATALOG_INDEX}
-            KeySchema:
-            - AttributeName: available
-              KeyType: HASH
-            - AttributeName: courseName
-              KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CATALOG_TABLE}
     

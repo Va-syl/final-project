@@ -47,12 +47,25 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
   }
 
   onCourseEnroll = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+    if (!this.state.newCourseName)
+    {
+      alert('Enter an available course number')
+      return
+    }
     try {
-        alert("At this point, validate the entered course number and send the matching name to enroll")
-      const courseNumber = "1234"
+      var course = this.state.catalog.find((element) => {
+        return element.courseNumber.toUpperCase() === this.state.newCourseName.toUpperCase();
+      })
+
+      if (!course)
+      {
+        alert('Enter an available course number')
+        return
+      }
+
       const newCourse = await enrollCourse(this.props.auth.getIdToken(), {
-        courseName: this.state.newCourseName,
-        courseNumber
+        courseName: course?.courseName ?? "Trainacity Course",
+        courseNumber: this.state.newCourseName.toUpperCase()
       })
       this.setState({
         courses: [...this.state.courses, newCourse],
@@ -88,6 +101,10 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
           [pos]: { completed: { $set: !course.completed } }
         })
       })
+      if (!course.completed)
+      {
+        alert("Thanks for completing the course.  Now please upload your project screenshot so it can be reviewed")
+      }
     } catch {
       alert('course check failed')
     }
@@ -134,10 +151,10 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
           <Header as="h3">Current Course Catalog</Header>
           <Grid.Row>
               <Grid.Column width={2} verticalAlign="middle">
-                  Course Number
+                <Header as="h4">Course Number</Header>
               </Grid.Column>
               <Grid.Column width={6} verticalAlign="middle">
-                  Course Name
+              <Header as="h4">Course Name</Header>
                 </Grid.Column>
           </Grid.Row>
           {this.state.catalog.map((course, pos) => {
@@ -148,9 +165,6 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
                 </Grid.Column>
                 <Grid.Column width={6} verticalAlign="middle">
                   {course.courseName}
-                </Grid.Column>
-                <Grid.Column width={16}>
-                  <Divider />
                 </Grid.Column>
               </Grid.Row>
             )
@@ -218,10 +232,10 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
                 Number
               </Grid.Column>
               <Grid.Column width={1} floated="right">
-                Upload Screenshot
+                  Deenroll
               </Grid.Column>
               <Grid.Column width={1} floated="right">
-                  Deenroll
+                Upload Screenshot
               </Grid.Column>
               <Grid.Column width={2} floated="right">
                   Project Screenshot
@@ -245,19 +259,19 @@ export class Courses extends React.PureComponent<CoursesProps, CoursesState> {
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
-                  color="blue"
-                  onClick={() => this.onEditButtonClick(course.courseId)}
+                  color="red"
+                  onClick={() => this.onCourseDeenroll(course.courseId)}
                 >
-                  <Icon name="pencil" />
+                  <Icon name="delete" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
-                  color="red"
-                  onClick={() => this.onCourseDeenroll(course.courseId)}
+                  color="blue"
+                  onClick={() => this.onEditButtonClick(course.courseId)}
                 >
-                  <Icon name="delete" />
+                  <Icon name="pencil" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={2} floated="right">

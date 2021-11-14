@@ -16,7 +16,6 @@ export class CourseAccess {
     private readonly coursesTable = process.env.COURSES_TABLE,
     private readonly index = process.env.COURSES_CREATED_AT_INDEX,
     private readonly catalogTable = process.env.CATALOG_TABLE,
-    private readonly catalogIndex = process.env.CATALOG_INDEX
     ) {
   }
 
@@ -24,10 +23,9 @@ export class CourseAccess {
     logger.info('getCatalog')
     const result = await this.docClient.query({
         TableName: this.catalogTable,
-        IndexName: this.catalogIndex,
         KeyConditionExpression: 'available = :available',
         ExpressionAttributeValues: {
-           ':available': true
+           ':available': "true"
           }
         }).promise()
 
